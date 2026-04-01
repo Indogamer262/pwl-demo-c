@@ -13,7 +13,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::all();
+        $books = Book::with('category')->get();
         return view('book.index', compact('books'));
     }
 
@@ -31,7 +31,23 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'isbn' => 'required|string|max:13',
+            'publish_year' => 'required|int',
+            'title' => 'required|string|max:100',
+            'author' => 'required|string|max:100',
+            'category_id' => 'required|int',
+            'description' => 'nullable|string|max:300',
+        ]);
+
+        // NEW WAY
+        Book::create($request->all());
+
+        // OLD WAY
+        // $category = new Category();
+        // $category->save();
+
+        return redirect()->route('book.index');
     }
 
     /**
@@ -47,7 +63,8 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        //
+        $categories = Category::all();
+        return view('book.edit', compact('book', 'categories'));
     }
 
     /**
@@ -55,7 +72,18 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        //
+        $request->validate([
+            'publish_year' => 'required|int',
+            'title' => 'required|string|max:100',
+            'author' => 'required|string|max:100',
+            'category_id' => 'required|int',
+            'description' => 'nullable|string|max:300',
+        ]);
+
+        // NEW WAY
+        $book->update($request->only('title', 'author', 'publish_year', 'category_id', 'description'));
+    
+        return redirect()->route('book.index');
     }
 
     /**
@@ -63,6 +91,7 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
-        //
+        $book->delete();
+        return redirect()->route('book.index');
     }
 }

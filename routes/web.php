@@ -42,7 +42,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/book/create', [BookController::class, 'store'])->name('book.store');
         Route::get('/book/{book}/edit', [BookController::class, 'edit'])->name('book.edit');
         Route::put('/book/{book}/edit', [BookController::class, 'update'])->name('book.update');
-        Route::delete('/bookk/{book}/destroy', [BookController::class, 'destroy'])->name('book.delete');
+        Route::delete('/book/{book}/destroy', [BookController::class, 'destroy'])->name('book.delete');
 
     });
 });

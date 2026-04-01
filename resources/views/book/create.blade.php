@@ -28,14 +28,43 @@
             <!-- <div class="page-category">Inner page content goes here</div> -->
             <div class="card">
               <div class="card-body">
-                <form method="post" action="{{ route('category.store') }}">
+                <form method="post" action="{{ route('book.store') }}">
                     @csrf
                     <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control" name="name" autofocus required maxlength="60">
+                        <label for="name">ISBN</label>
+                        <input type="text" class="form-control" name="isbn" autofocus required maxlength="60">
                     </div>
                     
-                    @error('name')
+                    @error('isbn')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                    @enderror
+
+                    <div class="form-group">
+                        <label for="name">Title</label>
+                        <input type="text" class="form-control" name="title" autofocus required maxlength="60">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">Author</label>
+                        <input type="text" class="form-control" name="author" autofocus required maxlength="60">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">Publish Year</label>
+                        <input type="text" class="form-control" name="publish_year" autofocus required maxlength="60">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category_id">Category</label>
+                        <select class="form-control" name="category_id" id="category_id" required>
+                            <option value="" disabled selected>-- Select Category --</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    @error('category_id')
                     <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
 

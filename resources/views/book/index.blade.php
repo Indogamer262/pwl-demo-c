@@ -29,7 +29,7 @@
             <div class="card">
               @if(Auth::user()->role_id==1)
                 <div class="card-header">
-                  <a href="{{ route('category.create') }}" class="btn btn-primary" role="button">Add Books</a>
+                  <a href="{{ route('book.create') }}" class="btn btn-primary" role="button">Add Books</a>
                 </div>
               @endif
               <div class="card-body">
@@ -50,15 +50,16 @@
                   <tbody>
                     @foreach($books as $book)
                       <tr>
-                        <td>{{ $books->id }}</td>
-                        <td>{{ $book->name }}</td>
+                        <td>{{ $book->isbn }}</td>
+                        <td>{{ $book->title }}</td>
                         <td>{{ $book->author }}</td>
                         <td>{{ $book->publish_year }}</td>
                         <td>{{ $book->description }}</td>
+                        <td>{{ $book->category->name ?? 'No Category' }}</td>
                         @if(Auth::user()->role_id==1)
                           <td>
-                            <a href="{{ route('book.edit', $book->id) }}" class="btn btn-warning btn-sm" role="button">Edit</a>
-                            <form method="post" action="{{ route('book.delete', $book->id) }}" id="delform">
+                            <a href="{{ route('book.edit', $book->isbn) }}" class="btn btn-warning btn-sm" role="button">Edit</a>
+                            <form method="post" action="{{ route('book.delete', $book->isbn) }}" id="delform">
                               @csrf
                               @method('DELETE')
                               <button type="submit" class="btn btn-danger btn-sm" role="button" onclick="return confirm('Are you sure want to delete this data?')">Delete</button>

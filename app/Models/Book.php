@@ -13,4 +13,9 @@ class Book extends Model
 
     public $incrementing = false;
     //
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
 }
