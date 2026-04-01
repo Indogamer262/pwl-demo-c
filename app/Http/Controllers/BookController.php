@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -31,17 +32,23 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'isbn' => 'required|string|max:13',
+        $validatedData = $request->validate([
+            'isbn' => 'required|string|max:13|unique:book,isbn',
             'publish_year' => 'required|int',
             'title' => 'required|string|max:100',
             'author' => 'required|string|max:100',
-            'category_id' => 'required|int',
+            'category_id' => 'required|int|exists:category,id',
             'description' => 'nullable|string|max:300',
+            'cover' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
         ]);
 
+        if($request->hasFile('cover')) {
+            $newFileName = $validatedData['isbn'] . '.' . $request->file('cover')->getClientOriginalExtension();
+            $request->file('cover')->storeAs('uploads', $newFileName, 'public');
+            $validatedData['cover'] = $newFileName;
+        }
         // NEW WAY
-        Book::create($request->all());
+        Book::create($validatedData);
 
         // OLD WAY
         // $category = new Category();
@@ -72,16 +79,28 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'publish_year' => 'required|int',
             'title' => 'required|string|max:100',
             'author' => 'required|string|max:100',
             'category_id' => 'required|int',
             'description' => 'nullable|string|max:300',
         ]);
+        
+        if($request->hasFile('cover')) {
+            if ($book->cover) {
+                Storage::disk('public')->delete('uploads/' . $book->cover);
+            }
+            $newFileName = $validatedData['isbn'] . '.' . $request->file('cover')->getClientOriginalExtension();
+            $request->file('cover')->storeAs('uploads', $newFileName, 'public');
+            $validatedData['cover'] = $newFileName;
+        }
+        else {
+            unset($validatedData['cover']);
+        }
 
         // NEW WAY
-        $book->update($request->only('title', 'author', 'publish_year', 'category_id', 'description'));
+        $book->update($validatedData);
     
         return redirect()->route('book.index');
     }
@@ -91,6 +110,9 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
+        if ($book->cover) {
+            Storage::disk('public')->delete('uploads/' . $book->cover);
+        }
         $book->delete();
         return redirect()->route('book.index');
     }

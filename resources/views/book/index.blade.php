@@ -51,7 +51,12 @@
                     @foreach($books as $book)
                       <tr>
                         <td>{{ $book->isbn }}</td>
-                        <td>{{ $book->title }}</td>
+                        <td>
+                          @if($book->cover)
+                            <img src="{{ asset('storage/uploads/' . $book->cover) }}" alt="Book Cover" class="img-thumbnail">
+                          @endif
+                          {{ $book->title }}
+                        </td>
                         <td>{{ $book->author }}</td>
                         <td>{{ $book->publish_year }}</td>
                         <td>{{ $book->description }}</td>

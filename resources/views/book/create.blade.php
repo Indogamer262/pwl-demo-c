@@ -28,11 +28,11 @@
             <!-- <div class="page-category">Inner page content goes here</div> -->
             <div class="card">
               <div class="card-body">
-                <form method="post" action="{{ route('book.store') }}">
+                <form method="post" action="{{ route('book.store') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="name">ISBN</label>
-                        <input type="text" class="form-control" name="isbn" autofocus required maxlength="60">
+                        <input type="text" class="form-control" name="isbn" autofocus required maxlength="13">
                     </div>
                     
                     @error('isbn')
@@ -45,12 +45,12 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="name">Author</label>
+                        <label for="author">Author</label>
                         <input type="text" class="form-control" name="author" autofocus required maxlength="60">
                     </div>
 
                     <div class="form-group">
-                        <label for="name">Publish Year</label>
+                        <label for="publish_year">Publish Year</label>
                         <input type="text" class="form-control" name="publish_year" autofocus required maxlength="60">
                     </div>
 
@@ -68,10 +68,19 @@
                     <div class="alert alert-danger">{{ $message }}</div>
                     @enderror
 
-                    <div>
+                    <div class="form-group">
                         <label for="description">Description</label>
                         <textarea class="form-control" name="description" required maxlength="150" rows="4"></textarea>
                     </div>
+
+                     <div class="form-group">
+                        <label for="cover">Cover</label>
+                        <input type="file" id="cover" name="cover" class="form-control @error('cover') is-invalid @enderror" accept="image/png, image/jpeg, image/jpg">
+                        @error('cover')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
               </div>
